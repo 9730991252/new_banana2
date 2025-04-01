@@ -12,9 +12,6 @@ def sunil_login(request):
             return redirect('sunil_home')
         else:
             return redirect('sunil_login')
-    Sunil(
-        sum=5555
-    ).save()
     return render(request, 'sunil/sunil_login.html')
 
 
