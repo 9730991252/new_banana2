@@ -6,11 +6,15 @@ def sunil_login(request):
         a =int(request.POST["number"])
         b =int(request.POST["pin"])
         s = a+b
-        if s == 11000 :
+        su = Sunil.objects.filter().first()
+        if s == int(su.sum) :
             request.session['sunil_mobile'] = s
             return redirect('sunil_home')
         else:
             return redirect('sunil_login')
+    Sunil(
+        sum=5555
+    ).save()
     return render(request, 'sunil/sunil_login.html')
 
 
