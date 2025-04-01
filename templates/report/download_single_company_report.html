@@ -1,0 +1,114 @@
+{% extends 'home/base.html' %}
+{% block head %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js" integrity="sha512-pdCVFUWsxl1A4g0uV6fyJ3nrnTGeWnZN2Tl/56j45UvZ1OMdm9CIbctuIHj+yBIRTUUyv6I9+OivXj4i0LPEYA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock head %}
+{% block content %}
+{% load office_tag %}
+{% include 'include/alert.html' %}
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    .main_box{
+        width: 8in;
+        padding: 40px;
+        background-color: white;
+        text-align: center;
+        color: black;
+        div{
+            z-index: 1321231;
+        }
+    }
+    .shope_name{
+        text-transform: uppercase;
+        z-index: 1;
+        color: rgb(255, 0, 0);
+        font-size: 30px;
+        font-weight: 700;
+
+    }
+    .address{
+        font-weight: 500;
+        margin: 0 auto;
+        font-size: 25px;
+    }
+
+    .flex{
+        display: flex;
+        justify-content: center;
+    }
+
+    .contact_details{
+        font-size: 20px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid black;
+    }
+    .logo_img{
+
+        width: 100px;
+        height: 100px;
+        img{
+            width: 100%;
+            height: 100%;
+        }
+    }
+    </style>
+
+<div id="canvas" class="text-center">
+    <div class="" style="position: relative;" >
+        <div class="logo_img" id="logo_img" style="position: absolute;left: 0;top: 0;"><img src="{{logo.image.url}}" alt=""></div>
+        <div class="shope_name " >{{e.shope.shope_name}}</div>
+    </div>
+<div class="address"><p>{{e.shope.address}}</p></div>
+<div class="contact_details"><b>{{e.shope.contact_details}}</b></div>
+
+
+    <div class="text-center">1 April {{last_year}} ते {{today_date|date:'d M Y'}} तपशील </div>
+
+<div class="container">
+
+
+
+<div class="company_box border" style="border: 1px solid black;">
+    {% company_details company.id %}
+</div>
+<br>
+
+
+
+
+</div>
+
+<div class="text-center" >
+    <h6><a  style="text-decoration: none;color: black;">सर्व प्रकारचे बारकोड व बिलिंग सॉफ्टवेअर तयार करून मिळतील &nbsp; PRASANNA DIGITAL - 9730991252</a></h6>
+</div>
+
+</div>
+
+<script>
+    var pdf = document.getElementById("canvas");
+    var opt = {
+        margin: 0.5,
+        filename: '{{company.name}}'+ new Date().toLocaleString() +' .pdf',
+        image: { type: 'jpeg', quality: 50 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'in', format: 'a4', orientaion: 'portrait' }
+    };
+    html2pdf().from(pdf).set(opt).toPdf().get('pdf').then(function (pdf) {
+        var totalPages = pdf.internal.getNumberOfPages();
+        for (i = 1; i <= totalPages; i++) {
+            pdf.setPage(i);
+            pdf.setFontSize(10);
+            pdf.setTextColor(150);
+ 
+            pdf.text('Page ' + i + ' of ' + totalPages, (pdf.internal.pageSize.getWidth()/2.25,(pdf.internal.pageSize.getHeight()-25)))
+        }
+    }).save().then(pdfResult => {
+        window.location.href = '/office/money_company_details/{{company.id}}';
+    });
+</script>
+
+{% endblock content %}
+

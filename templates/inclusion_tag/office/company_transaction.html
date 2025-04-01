@@ -1,0 +1,108 @@
+<table class="table" >
+    <thead>
+        <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for trans in transaction %}
+        <tr>
+            <td>{{trans.date}}</td>
+            <td>{{trans.payment_type}} &nbsp;{% if trans.payment_type == 'PhonePe' %}{{trans.phonepe_number}}{% elif trans.payment_type == 'Bank' %}{{trans.bank_number}}{% endif %} </td>
+            <td><b>Rs.{{trans.amount}}</b> <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#exampleModal{{trans.id}}"><i class="fas fa-edit    "></i></button> </td>
+        </tr>
+  <div class="modal fade" id="exampleModal{{trans.id}}" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="location.reload()"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" value="{{trans.id}}" name="id">
+            <div class="mb-3">
+                <input type="date"   name="date" max="{{today_date|date:'Y-m-d'}}" value="{{trans.date|date:'Y-m-d'}}" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <select class="form-select" onchange="change_input(this.value,'{{trans.id}}')" name="payment_type" required>
+                    <option  value="">Select Payment Type</option>
+                    <option value="Cash" {% if trans.payment_type == 'Cash' %} selected {% endif %}>Cash</option>
+                    <option value="PhonePe" {% if trans.payment_type == 'PhonePe' %} selected {% endif %}>PhonePe</option>
+                    <option value="Bank" {% if trans.payment_type == 'Bank' %} selected {% endif %}>Bank</option>
+                </select>
+            </div>
+            {% if trans.payment_type == 'PhonePe' %}
+                <div class="mb-3" id="phonepe_box{{trans.id}}">
+                    <label for="">phonepe number</label>
+                    <input type="number" name="phonepe_number" value="{{trans.phonepe_number}}" class="form-control" >
+                </div>
+
+                <div style="display: none;" class="mb-3" id="bank_box{{trans.id}}">
+                    <label for="">bank number</label>
+                    <input type="text" name="bank_number" class="form-control" >
+                </div>
+            {% elif trans.payment_type == 'Bank' %}
+                <div class="mb-3" id="bank_box{{trans.id}}">
+                    <label for="">bank bank_box</label>
+                    <input type="text" name="bank_number" value="{{trans.bank_number}}" class="form-control" >
+                </div>
+
+                <div style="display: none;" class="mb-3" id="phonepe_box{{trans.id}}">
+                    <label for="">phonepe number</label>
+                    <input type="number" name="phonepe_number" class="form-control" >
+                </div>
+
+            {% else %}
+                <div style="display: none;" class="mb-3" id="phonepe_box{{trans.id}}">
+                    <label for="">phonepe number</label>
+                    <input type="number" name="phonepe_number" class="form-control" >
+                </div>
+
+                <div style="display: none;" class="mb-3" id="bank_box{{trans.id}}">
+                    <label for="">bank number</label>
+                    <input type="text" name="bank_number" class="form-control">
+                </div>
+
+            {% endif %}
+            <div class="mb-3">
+                <label for="">Amount</label>
+                <input type="number" name="amount" value="{{trans.amount}}" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary" name="edit_transition">Edit</button>
+            </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="location.reload()" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+        {% endfor %}
+    </tbody>
+    <thead>
+            <th>Total</th>
+            <th></th>
+            <th><b>Rs.{{total_amount}}</b></th>
+    </thead>
+</table>
+
+
+<script>
+    function change_input(value, id) {
+        if(value == 'PhonePe') {
+            document.getElementById('phonepe_box'+id).style.display = 'unset';
+            document.getElementById('bank_box'+id).style.display = 'none';
+        } else if(value == 'Bank') {
+            document.getElementById('bank_box'+id).style.display = 'unset';
+            document.getElementById('phonepe_box'+id).style.display = 'none';
+        } else {
+            document.getElementById('bank_box'+id).style.display = 'none';
+            document.getElementById('phonepe_box'+id).style.display = 'none';
+        }
+    }
+</script>

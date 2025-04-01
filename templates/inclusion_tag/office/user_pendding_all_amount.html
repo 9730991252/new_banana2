@@ -1,0 +1,57 @@
+{% load office_tag %}
+
+<style>
+    .total_box{
+        width: 350px;
+        display: grid;
+        margin: 0   auto;
+        padding: 1px;
+        gap: 1px;
+        grid-template-columns: repeat(2, 1fr);
+        background-color: black;
+
+        div{
+            text-align: center;
+            background-color: white;
+        }
+        .total {
+
+            font-weight: 500;
+            grid-column-start:1 ;
+            grid-column-end:3 ;
+
+        }
+        .heading{
+            text-align: center;
+            font-weight: 500;
+            grid-column-start:1 ;
+            grid-column-end:3 ;
+
+        }
+    }
+    a{
+        text-decoration: none;
+        color: black;
+    }
+</style>
+<a href="/office/farmer/">
+<div class="total_box">
+    <div class="heading"><b>शेतकरी देणे बाकी</b></div>
+    <script>
+        var total_amount = 0
+    </script>
+        {% for u in all_users %}
+            <div>{{u.name}}</div>
+            <div style="color: red;font-weight: 700;">{% user_pending_bill_amount u.id as user_pending_bill_amount %}{{user_pending_bill_amount}}</div>
+            <script>
+                total_amount += Number('{{user_pending_bill_amount}}')
+            </script>
+        {% endfor %}
+        <div class="total">एकूण <strong id="user_total_amount" class="ms-2 text-danger"></strong> </div>
+        <script>
+            document.getElementById('user_total_amount').innerText = total_amount
+            var total_amount = 0
+        </script>
+    </div>
+
+</a>
