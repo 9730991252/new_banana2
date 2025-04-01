@@ -37,10 +37,10 @@ source venv/bin/activate
 
 ************************************
 
+pip install django
 pip install num2words
-
-***************************
 pip install pillow
+pip install gunicorn
 
 ****************migrations******
 python3 manage.py makemigrations
@@ -48,17 +48,7 @@ python3 manage.py makemigrations
 *********** migrate ********
 
 python3 manage.py migrate
-
-
-***** install django ******
-
-pip install django
-pip install pillow
-pip install num2words
-
-******** Install Gunicorn ******
  
-pip install gunicorn
 
 *********** Deactivate Virtualenv *****
 
@@ -156,7 +146,7 @@ server{
     listen 80;
     listen [::]:80;
 
-    server_name 103.150.136.82 new.banana.tejorder.com www.new.banana.tejorder.com;
+    server_name 103.150.136.82 newbanana.tejorder.com www.newbanana.tejorder.com;
     client_max_body_size 500M;
 
     location = /favicon.ico { access_log off; log_not_found off; }
