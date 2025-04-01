@@ -137,7 +137,7 @@ env.bak/
 venv.bak/
 logo_images/
 images/
-migrations/
+# migrations/
 
 # Spyder project settings
 .spyderproject
