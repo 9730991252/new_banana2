@@ -195,6 +195,9 @@
             
             <div id="eater1" class="div1">इतर चार्ज</div>
             <div id="eater2" style="font-weight: 700; color: red;"  class="div2">{{bill.eater}}</div>
+                        
+            <div id="vehicle_charge1" class="div1">मोटार भाडे</div>
+            <div id="vehicle_charge2" style="font-weight: 700; color: red;"  class="div2">{{bill.vehicle_charge}}</div>
             
             <div style="font-weight: 700;background-color: rgb(212, 249, 255);" class="div1 mb-3">एकुण रक्कम </div>
             <div style="font-weight: 700;background-color: rgb(212, 249, 255);" id="total_amount" class="div2 mb-3">{{bill.total_amount}}</div>
@@ -277,7 +280,11 @@
         document.getElementById('eater2').style.display = 'none'
     }
 
-
+    vehicle_charge2 = document.getElementById('vehicle_charge2').innerText;
+    if(Number(vehicle_charge2) == 0){
+        document.getElementById('vehicle_charge1').style.display = 'none'
+        document.getElementById('vehicle_charge2').style.display = 'none'
+    }
 
 
     //////////////

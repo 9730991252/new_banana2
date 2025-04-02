@@ -536,8 +536,9 @@ def new_company_bill(request):
             wasteage = request.POST.get('wasteage')
             prise = request.POST.get('prise')
             labor_amount = request.POST.get('labor')
-            service_charge = request.POST.get('service_charge')
             eater = request.POST.get('eater')
+            service_charge = request.POST.get('service_charge')
+            vehicle_charge = request.POST.get('vehicle_charge')
             date = request.POST.get('date')
             leaf_weight = request.POST.get('leaf_weight') 
             total_amount = request.POST.get('total_amount')
@@ -578,6 +579,7 @@ def new_company_bill(request):
                 bill_number,
                 labor_amount,
                 service_charge,
+                vehicle_charge,
                 eater,
                 date
             )
@@ -593,7 +595,7 @@ def new_company_bill(request):
         return redirect('login')
     
     
-def save_new_company_bill(leaf_weight, total_vehicale_weight, empty_vehicale_weight, company_id, shope_id, employee_id, vehicale_number, weight, empty_box, wasteage, prise, total_amount, bill_number, labor_amount, service_charge, eater, date):
+def save_new_company_bill(leaf_weight, total_vehicale_weight, empty_vehicale_weight, company_id, shope_id, employee_id, vehicale_number, weight, empty_box, wasteage, prise, total_amount, bill_number, labor_amount, service_charge, vehicle_charge, eater, date):
     # print('leaf_weight', leaf_weight)
     # print('total_vehicale_weight', total_vehicale_weight)
     # print('empty_vehicale_weight', empty_vehicale_weight)
@@ -627,6 +629,7 @@ def save_new_company_bill(leaf_weight, total_vehicale_weight, empty_vehicale_wei
         bill_number=bill_number,
         labor_amount=labor_amount,
         service_charge=service_charge,
+        vehicle_charge=vehicle_charge,
         eater=eater,
         date=date
     ).save()
@@ -814,6 +817,7 @@ def edit_company_bill(request, id):
                     prise = request.POST.get('prise')
                     labor_amount = request.POST.get('labor')
                     service_charge = request.POST.get('service_charge')
+                    vehicle_charge = request.POST.get('vehicle_charge')
                     eater = request.POST.get('eater')
                     date = request.POST.get('date')
                     leaf_weight = request.POST.get('leaf_weight') 
@@ -830,6 +834,7 @@ def edit_company_bill(request, id):
                     bill.total_amount= math.ceil(eval(total_amount))
                     bill.labor_amount=labor_amount
                     bill.service_charge=service_charge
+                    bill.vehicle_charge=vehicle_charge
                     bill.eater=eater
                     bill.date=date
                     bill.save()
