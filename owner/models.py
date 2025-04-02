@@ -96,7 +96,7 @@ class Company_bill(models.Model):
     paid_status = models.IntegerField(default=0)
     labor_amount = models.FloatField(null=True)
     service_charge = models.FloatField(null=True)
-    # vehicle_charge = models.FloatField(null=True)
+    vehicle_charge = models.FloatField(null=True)
     eater = models.FloatField(null=True)
     date = models.DateField(null=True)
     bill_number = models.IntegerField(null=True)
