@@ -701,7 +701,7 @@ def generate_farmer_bill_image(request, id):
         total_weight = (wasteage_weight + danda_weight)
         amount = math.ceil(bill.prise * math.floor(total_weight))
         total_amount_words = num2words(bill.total_amount)
-        signature = Signature.objects.filter(id=bill.office_employee.id).first()
+        signature = Signature.objects.filter(office_employee_id=bill.office_employee.id).first()
         logo = Logo.objects.filter(shope_id=e.shope.id).first()
 
         context = {
