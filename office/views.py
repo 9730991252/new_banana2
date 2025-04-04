@@ -657,7 +657,7 @@ def generate_company_bill_image(request, id):
             total_weight = (wasteage_weight)
         amount = math.ceil(bill.prise * math.floor(total_weight))
         total_amount_words = num2words(bill.total_amount)
-        signature = Signature.objects.filter(id=bill.office_employee.id).first()
+        signature = Signature.objects.filter(office_employee_id=bill.office_employee.id).first()
         logo = Logo.objects.filter(shope_id=e.shope.id).first()
         
         recived_amount = company_recived_payment_transaction.objects.filter(shope_id=e.shope_id, company_id=bill.company.id).aggregate(Sum('amount'))['amount__sum']
@@ -748,7 +748,7 @@ def view_company_bill(request, id):
         amount = math.ceil(bill.prise * math.floor(total_weight))
         p = ''
         total_amount_words = num2words(bill.total_amount)
-        signature = Signature.objects.filter(id=bill.office_employee.id).first()
+        signature = Signature.objects.filter(office_employee_id=bill.office_employee.id).first()
         total_credit = 0
         total_pending_amount = bill.total_amount
     
