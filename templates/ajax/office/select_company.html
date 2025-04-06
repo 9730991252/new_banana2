@@ -107,7 +107,7 @@
     {% if danda_weight.status == 1  %}
     <div class="containt_box">
         <div><label for="danda_weight">दांडयाचे वजन (अधिक) 8 %</label></div>
-        <div><input type="number" oninput="add_danda_weight()" name="danda_weight" id="danda_weight" class="form-control" ></div>
+        <div><input type="number" step="any" oninput="add_danda_weight()" name="danda_weight" id="danda_weight" class="form-control" ></div>
     </div>
     {% endif %}
     
@@ -277,8 +277,8 @@
     function calculate_prise(){
         total_weight = document.getElementById('total_weight').value;
         prise = document.getElementById('prise').value;
-        amount = prise * Math.floor(total_weight)
-        document.getElementById('amount').value=amount
+        amount = prise * total_weight
+        document.getElementById('amount').value=amount.toFixed(2)
         
         // labor_amount = total_weight * 0.4
         // labor_amount = labor_amount.toFixed(0)

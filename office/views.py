@@ -745,7 +745,7 @@ def view_company_bill(request, id):
         else:
             danda_weight = 0
             total_weight = (wasteage_weight)
-        amount = math.ceil(bill.prise * math.floor(total_weight))
+        amount = (bill.prise * total_weight)
         p = ''
         total_amount_words = num2words(bill.total_amount)
         signature = Signature.objects.filter(office_employee_id=bill.office_employee.id).first()

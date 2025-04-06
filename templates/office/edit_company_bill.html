@@ -303,7 +303,7 @@
     function calculate_prise(){
         total_weight = document.getElementById('total_weight').value;
         prise = document.getElementById('prise').value;
-        amount = prise * Math.floor(total_weight)
+        amount = prise * total_weight
         document.getElementById('amount').value=amount
         
         // labor_amount = total_weight * 0.4
