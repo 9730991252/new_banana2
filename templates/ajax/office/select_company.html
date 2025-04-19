@@ -110,7 +110,7 @@
         <div><input type="number" step="any" oninput="add_danda_weight()" name="danda_weight" id="danda_weight" class="form-control" ></div>
     </div>
     {% endif %}
-    
+     
     <div class="containt_box" style="font-weight: 700;">
         <div><label for="total_weight">एकुण मालाचे वजन </label></div>
         <div><input type="number"  style="font-weight: 700;" name="total_weight" id="total_weight" class="form-control default_input" readonly></div>
@@ -256,6 +256,7 @@
         a = document.getElementById('amount').value;
         t = (Number(a) + Number(service_charge) )
         document.getElementById('total_amount').value = t
+        calculate_eater_prise()
     }
     function calculate_eater_prise(){   
         eater = document.getElementById('eater').value;

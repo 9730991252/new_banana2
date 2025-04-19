@@ -761,7 +761,7 @@ def view_company_bill(request, id):
         recived_amount = company_recived_payment_transaction.objects.filter(shope_id=e.shope_id, company_id=bill.company.id).aggregate(Sum('amount'))['amount__sum']
         if recived_amount == None:
             recived_amount = 0
-            
+             
         bill_amount = Company_bill.objects.filter(company_id=bill.company.id).aggregate(Sum('total_amount'))['total_amount__sum']
         if bill_amount == None:
             bill_amount = 0
