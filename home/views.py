@@ -15,7 +15,7 @@ def login(request):
         if request.method == "POST":
             number=request.POST ['number']
             pin=request.POST ['pin']
-            o= office_employee.objects.filter(mobile=number,pin=pin,status=1) 
+            o= office_employee.objects.filter(mobile=number,pin=pin,status=1, shope__status=1) 
             if o:
                 request.session['office_mobile'] = request.POST["number"]
                 return redirect('office_home')
