@@ -10,7 +10,7 @@
 {% load static %}
 {% check_shop_payment e.shope_id as check_shop_payment %}
 <div class="menu">
-    <a  href="/office/office_home/"  class="my-1 {% if request.path == '/office/office_home/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">Home {{check_shop_payment.status}}</a>
+    <a  href="/office/office_home/"  class="my-1 {% if request.path == '/office/office_home/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">Home</a>
     <a  href="/office/new_farmer_bill/"  class="my-1 {% if request.path == '/office/new_farmer_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}" {% if check_shop_payment.status == 'disable' %} style="pointer-events: none;" {% endif %}>शेतकरी नवीन बिल</a>
     <a  href="/office/farmer_bill/" class="my-1 {% if request.path == '/office/farmer_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">शेतकरी मागील बिल</a>
     <a  href="/office/farmer/" class="my-1 {% if request.path == '/office/farmer/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">शेतकरी</a>
