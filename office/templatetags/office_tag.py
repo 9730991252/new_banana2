@@ -7,7 +7,7 @@ from datetime import date
 from django.utils.safestring import mark_safe
 from office.views import *
 register = template.Library()
-
+import month
 
 
 @register.inclusion_tag('inclusion_tag/office/company_details.html')
@@ -154,6 +154,22 @@ def company_details_unpaid_bills(company_id):
 def product_cost_net_weight(weight, empty_box):
     a = (weight - empty_box)
     return a
+
+@register.simple_tag()
+def check_shop_payment(shope_id):
+    today_date = date.today()
+    status = ''
+    if today_date < date(today_date.year, today_date.month, 6):
+        status = 'show_worning'
+    elif Shope_payment.objects.filter(shope_id=shope_id, from_date__year=today_date.year, from_date__month=today_date.month-1).exists():
+        status = 'paid'
+    asp = Auto_Shope_payment.objects.filter(shope_id=shope_id, added_date__year=today_date.year, month=month.Month(date.today().year, date.today().month - 1)).last()
+    if asp:
+        if asp.is_paid == True:
+            status = 'paid'
+    if status == 'show_worning' or status == '' and today_date > date(today_date.year, today_date.month, 5):
+        status = 'disable'
+    return {'status':status, 'last_month':date(today_date.year, today_date.month-1, today_date.day)}
  
 @register.simple_tag()
 def user_pending_bill_amount(office_employee_id):

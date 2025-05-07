@@ -6,4 +6,6 @@ urlpatterns = [
     path('owner_logout/', views.owner_logout, name='owner_logout'),
     path('office_logout/', views.office_logout, name='office_logout'),
     path('terms_and_conditions/', views.terms_and_conditions, name='terms_and_conditions'),
+    path('payment-verify/', views.payment_verify, name='payment-verify'),
+
 ]

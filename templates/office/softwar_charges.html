@@ -3,7 +3,6 @@
 {% endblock head %}
 {% block content %}
 {% load office_tag %}
-{% include 'include/alert.html' %}
 <div>
     welcome - {{e.name}}
 </div>
@@ -11,7 +10,7 @@
 <style>
     .payment_box {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
         gap: 1px;
         padding: 1px;
         background-color: black;
@@ -22,17 +21,40 @@
         }
     }
 </style>
+{% include 'include/alert.html' %}
+
+<div class="payment_box">
+    <div><b>Last Month</b></div>
+    <div><b>Addeed Date</b></div>
+    <div><b>Amount</b></div>
+    <div><b>Status</b></div>
+
+    {% for p in auto %}
+    <div>{{p.month|date:"Y M"}}</div>
+    <div>{{p.added_date|date:"Y-m-d"}}</div>
+    <div><b>Rs.{{p.amount}}</b></div>
+    {% if p.is_paid == True %}
+        <div><b class="text-success">Paid</b></div>
+    {% else %}
+        <div><b class="text-danger">Failed</b></div>
+    {% endif %}
+    {% endfor %}
+</div>
+<br>
+{% if payment %}
 <div class="payment_box">
     <div><b>From</b></div>
     <div><b>To</b></div>
     <div><b>Amount</b></div>
+    <div><b>Status</b></div>
 
     {% for p in payment %}
     <div>{{p.from_date}}</div>
     <div>{{p.to_date}}</div>
     <div><b>Rs.{{p.amount}}</b></div>
+    <div><b class="text-warning">Paid To Office</b></div>
     {% endfor %}
 </div>
-
+{% endif %}
 
 {% endblock content %}

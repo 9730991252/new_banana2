@@ -24,4 +24,5 @@ urlpatterns = [
     path('generate_farmer_bill_image/<int:id>', views.generate_farmer_bill_image, name='generate_farmer_bill_image'),
     path('generate_company_bill_image/<int:id>', views.generate_company_bill_image, name='generate_company_bill_image'),
     path('softwar_charges/', views.softwar_charges, name='softwar_charges'),
+    path('create_payment/', views.create_payment, name='create_payment'),
 ]

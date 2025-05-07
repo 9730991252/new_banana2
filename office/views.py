@@ -10,6 +10,10 @@ import time
 import datetime
 from datetime import date
 from .templatetags.office_tag import *
+import razorpay
+from django.conf import settings
+from django.http import JsonResponse
+import month
 # Create your views here.
 
 def office_home(request):
@@ -25,19 +29,54 @@ def office_home(request):
         return render(request, 'office/office_home.html', context)
     else:
         return redirect('login')
+# payment
     
 def softwar_charges(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
+        shope_payment = Auto_Shope_payment.objects.filter(shope=e.shope).last()
+        if shope_payment.added_date == date.today():
+            if shope_payment.is_paid == False:
+                messages.error(request, 'Your Todayes Payment Is Failed')
+            else:
+                messages.success(request, f'Congratulations You Had A successful Payment Today of ₹{shope_payment.amount}')
         context={
             'e':e,
-            'payment':Shope_payment.objects.filter(shope_id=e.shope.id).order_by('-id') 
+            'payment':Shope_payment.objects.filter(shope_id=e.shope.id).order_by('-id') ,
+            'auto':Auto_Shope_payment.objects.filter(shope=e.shope)
         }
         return render(request, 'office/softwar_charges.html', context)
     else:
         return redirect('login')
+
+client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+def create_payment(request):
+    if request.method == 'GET':
+        shope = request.GET['shope']
+        amount = request.GET['amount']
+        order_data = {
+            "amount":int(int(amount) *100),
+            "currency": "INR",
+            "payment_capture": "1"
+        }
+        razorpay_order = client.order.create(order_data)
+        
+        Auto_Shope_payment.objects.create(
+            shope_id=shope,
+            amount=int(amount),
+            month=month.Month(date.today().year, date.today().month - 1),
+            razorpay_order_id=razorpay_order['id']
+        )
+        return JsonResponse({
+            'order_id': razorpay_order['id'],
+            'razorpay_key_id': settings.RAZORPAY_KEY_ID,
+            'amount': order_data['amount'],
+            'razorpay_callback_url': settings.RAZORPAY_CALLBANK_URL,
+        })
     
+# end payment
     
 def money(request):
     if request.session.has_key('office_mobile'):
