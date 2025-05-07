@@ -36,11 +36,12 @@ def softwar_charges(request):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
         shope_payment = Auto_Shope_payment.objects.filter(shope=e.shope).last()
-        if shope_payment.added_date == date.today():
-            if shope_payment.is_paid == False:
-                messages.error(request, 'Your Todayes Payment Is Failed')
-            else:
-                messages.success(request, f'Congratulations You Had A successful Payment Today of ₹{shope_payment.amount}')
+        if shope_payment:
+            if shope_payment.added_date == date.today():
+                if shope_payment.is_paid == False:
+                    messages.error(request, 'Your Todayes Payment Is Failed')
+                else:
+                    messages.success(request, f'Congratulations You Had A successful Payment Today of ₹{shope_payment.amount}')
         context={
             'e':e,
             'payment':Shope_payment.objects.filter(shope_id=e.shope.id).order_by('-id') ,
