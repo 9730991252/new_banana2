@@ -1,5 +1,8 @@
 from django.shortcuts import redirect, render
 from . models import *
+from owner. models import *
+from datetime import *
+import month
 # Create your views here.
 def sunil_login(request):
     if request.method == 'POST':
@@ -69,8 +72,41 @@ def sunil_home(request):
             c.status = 1
             c.save()
             return redirect('sunil_home')
+        if 'login'in request.POST:
+            id = request.POST.get('id')
+            e = office_employee.objects.filter(shope_id=id).first()
+            if e:
+                request.session['office_mobile'] = e.mobile
+                return redirect('office_home')
+            return redirect('sunil_home')
+        shope = []
+        # today_date = date(2025,6,1)
+        for s in Shope.objects.all():
+            today_date = date.today()
+            status = ''
+            if today_date < date(today_date.year, today_date.month, 6):
+                status = 'show_worning'
+            elif Shope_payment.objects.filter(shope_id=s.id, from_date__year=today_date.year, from_date__month=today_date.month-1).exists():
+                status = 'paid'
+            asp = Auto_Shope_payment.objects.filter(shope_id=s.id, added_date__year=today_date.year, month=month.Month(date.today().year, date.today().month - 1)).last()
+            if asp:
+                if asp.is_paid == True:
+                    status = 'paid'
+            if status == 'show_worning' or status == '' and today_date > date(today_date.year, today_date.month, 5):
+                status = 'Not Paid'
+            shope.append({
+                        'id':s.id,
+                        'shope_name':s.shope_name,
+                        'owner_name':s.owner_name,
+                        'mobile':s.mobile,
+                        'pin':s.pin,
+                        'edit_pin':s.edit_pin,
+                        'status':s.status,
+                        'is_paid':status
+                          })
+        
         context={
-            'shope':Shope.objects.all()
+            'shope':shope
         }
         return render(request, 'sunil/sunil_home.html', context)
     else:
