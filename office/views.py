@@ -20,6 +20,7 @@ def office_home(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
+        check_payment(e.shope)
         context={
             'e':e,
             'bill':Farmer_bill.objects.filter(id=31).first(),
@@ -30,11 +31,13 @@ def office_home(request):
     else:
         return redirect('login')
 # payment
+
     
 def softwar_charges(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
+        check_payment(e.shope)
         shope_payment = Auto_Shope_payment.objects.filter(shope=e.shope).last()
         if shope_payment:
             if shope_payment.added_date == date.today():
@@ -52,6 +55,16 @@ def softwar_charges(request):
         return redirect('login')
 
 client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+
+def check_payment(shope):
+    shope_payment = Auto_Shope_payment.objects.filter(shope=shope, is_paid=False,).last()
+    if shope_payment:
+        payments = client.order.payments(shope_payment.razorpay_order_id)
+        if payments:
+            payment_paid = payments['items'][0]['status']
+            if payment_paid == 'captured':
+                shope_payment.is_paid = True
+                shope_payment.save()
 
 def create_payment(request):
     if request.method == 'GET':

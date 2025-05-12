@@ -4,11 +4,39 @@
 {% endblock head %}
 {% block content %}
 {% load office_tag %}
+{% load static %}
 {% include 'include/alert.html' %}
+
+<style>
+
+    .img_div{
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        background-color: rgba(255, 255, 255, 0.705);
+        width: 100%;
+        overflow: hidden;
+        user-select: none;
+        pointer-events: none;
+    }
+    .img_div img{
+        width: 500px;
+        border-radius: 100px;
+
+    }
+</style>
+<div class="img_div">
+    <img src="{% static 'img/loader.gif' %}" alt="">
+</div>
 
 <div id="canvas">
 
-    <div class="text-center">1 April {{last_year}} ते {{today_date|date:'d M Y'}} तपशील </div>
     {% company_pendding_all_amount e.shope_id %}
 
 <div class="container">
@@ -16,7 +44,7 @@
 
 {% for c in company %}
 <div class="company_box border" style="border: 1px solid black;">
-    {% company_details c.id %}
+    {% company_details_monthly c.id month %}
 </div>
 <br>
 {% endfor %}
@@ -26,8 +54,46 @@
 </div>
 
 </div>
-
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+async function downloadLongPDF() {
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF('p', 'mm', 'a4');
+
+    const content = document.getElementById('canvas');
+    const canvas = await html2canvas(content, { scale: 2, useCORS: true });
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+
+    const pdfWidth = 210; // A4 width in mm
+    const pdfHeight = 297; // A4 height in mm
+    const imgProps = pdf.getImageProperties(imgData);
+    const imgHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    let heightLeft = imgHeight;
+    let position = 0;
+
+    // Add first page
+    pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight);
+    heightLeft -= pdfHeight;
+
+    // Add remaining pages
+    while (heightLeft > 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'JPEG', 0, position, pdfWidth, imgHeight);
+        heightLeft -= pdfHeight;
+    }
+
+    pdf.save(new Date().toLocaleString() + '.pdf')
+    window.location.href = '/office/report/';
+           
+}
+
+window.onload(downloadLongPDF())
+</script>
+<!-- <script>
     var pdf = document.getElementById("canvas");
     var opt = {
         margin: 0.5,
@@ -46,9 +112,9 @@
             pdf.text('Page ' + i + ' of ' + totalPages, (pdf.internal.pageSize.getWidth()/2.25,(pdf.internal.pageSize.getHeight()-25)))
         }
     }).save().then(pdfResult => {
-        window.location.href = '/office/report/';
+        // window.location.href = '/office/report/';
     });
-</script>
+</script> -->
 
 {% endblock content %}
 

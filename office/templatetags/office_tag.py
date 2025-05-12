@@ -8,7 +8,120 @@ from django.utils.safestring import mark_safe
 from office.views import *
 register = template.Library()
 import month
+from datetime import datetime  # Ensure this import is at the top of the file
 
+
+@register.inclusion_tag('inclusion_tag/office/company_details_monthly.html')
+def company_details_monthly(company_id, s_month):
+    s_month = datetime.strptime(s_month, "%Y-%m")  # Assuming s_month is in "YYYY-MM" format
+    s_date = date(s_month.year, s_month.month, 1)
+    if company_id:
+        company = Company.objects.get(id=company_id)
+        bills = Company_bill.objects.filter(company_id=company_id, date__year=s_date.year, date__month=s_date.month)
+        bill_amount = bills.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+        bill_opning = Company_bill.objects.filter(company_id=company_id, date__lt=s_date).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+        bill_amount += bill_opning
+        transactions_t =  company_recived_payment_transaction.objects.filter(company_id=company_id, date__year=s_date.year, date__month=s_date.month).aggregate(Sum('amount'))['amount__sum']
+        if transactions_t == None:
+            transactions_t = 0
+            
+            
+        payment_opning = company_recived_payment_transaction.objects.filter(company_id=company_id, date__lt=s_date).aggregate(Sum('amount'))['amount__sum'] or 0
+
+            
+        paid_bill_amount = Company_bill.objects.filter(company_id=company_id, paid_status = 1).aggregate(Sum('total_amount'))['total_amount__sum']
+        if paid_bill_amount == None:
+            paid_bill_amount = 0
+            
+        remening_amount = (int(transactions_t) - int(paid_bill_amount))
+        
+        bill = Company_bill.objects.filter(company_id=company_id, paid_status=0).order_by('date')
+        
+        bill_id = 0
+        for b in bill:
+            if remening_amount >= b.total_amount:
+                remening_amount -= b.total_amount
+            else:
+                bill_id = b.id
+                if int(remening_amount) != 0:
+                    remening_amount = int(b.total_amount) - int(remening_amount)
+                break 
+        r = {'bill_id':bill_id, 'remening_amount':remening_amount}
+        return {
+            'company': company,
+            'bill':bills,
+            'transactions': company_recived_payment_transaction.objects.filter(company_id=company_id, date__year=s_date.year, date__month=s_date.month),
+            'transactions_t':transactions_t,
+            'bill_amount':bill_amount,
+            'bill_amount_total':bill_amount,
+            'final_amount':(int(bill_amount) - int(transactions_t)),
+            'remening_amount':r,
+            'bill_opning':bill_opning,
+            'payment_opning':payment_opning,
+            's_date':s_date
+        }
+    return {}
+
+@register.inclusion_tag('inclusion_tag/office/farmer_details_monthly.html')
+def farmer_details_monthly(farmer_id, s_month):
+    s_month = datetime.strptime(s_month, "%Y-%m")  # Assuming s_month is in "YYYY-MM" format
+    s_date = date(s_month.year, s_month.month, 1)
+    if farmer_id:
+        farmer = Farmer.objects.get(id=farmer_id)
+        bills = Farmer_bill.objects.filter(farmer_id=farmer_id, date__year=s_date.year, date__month=s_date.month)
+        bill_amount = bills.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+        bill_opning = Farmer_bill.objects.filter(farmer_id=farmer_id, date__lt=s_date).aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+        bill_amount += bill_opning
+        transactions_t =  Farmer_payment_transaction.objects.filter(farmer_id=farmer_id, date__year=s_date.year, date__month=s_date.month).aggregate(Sum('amount'))['amount__sum']
+        if transactions_t == None:
+            transactions_t = 0
+            
+        # remening_amount = change_farmer_bill_paid_status(farmer_id)
+        
+
+        recived_payment = Farmer_payment_transaction.objects.filter(farmer_id=farmer_id, date__year=s_date.year, date__month=s_date.month).aggregate(Sum('amount'))['amount__sum']
+        payment_opning = Farmer_payment_transaction.objects.filter(farmer_id=farmer_id, date__lt=s_date).aggregate(Sum('amount'))['amount__sum'] or 0
+        transactions_t += payment_opning
+        if recived_payment == None:
+            recived_payment = 0
+        paid_bill_amount = Farmer_bill.objects.filter(farmer_id=farmer_id, paid_status = 1).aggregate(Sum('total_amount'))['total_amount__sum']
+        if paid_bill_amount == None:
+            paid_bill_amount = 0
+        remening_amount = (int(recived_payment) - int(paid_bill_amount))
+        bill = Farmer_bill.objects.filter(farmer_id=farmer_id, paid_status=0).order_by('date')
+        
+        bill_id = 0
+        for b in bill:
+            if remening_amount >= b.total_amount:
+                b.paid_status = 1
+                b.save()
+                remening_amount -= b.total_amount
+            else:
+                bill_id = b.id
+                if int(remening_amount) != 0:
+                    remening_amount = int(b.total_amount) - int(remening_amount)
+                break
+        remening_amount = {'bill_id':bill_id, 'remening_amount':remening_amount}
+
+        ########################        
+        last_month_year = s_date.year - 1 if s_date.month == 1 else s_date.year
+
+        
+        return {
+            'farmer': farmer,
+            'bill':bills,
+            'transactions': Farmer_payment_transaction.objects.filter(farmer=farmer, date__year=s_date.year, date__month=s_date.month),
+            'transactions_t':transactions_t,
+            'bill_amount':bill_amount,
+            'bill_amount_total':bill_amount,
+            'final_amount':(int(bill_amount) - int(transactions_t)),
+            'remening_amount':remening_amount,
+            'bill_opning':bill_opning,
+            'payment_opning':payment_opning,
+            's_date':s_date
+            
+        }
+    return {}
 
 @register.inclusion_tag('inclusion_tag/office/company_details.html')
 def company_details(company_id):

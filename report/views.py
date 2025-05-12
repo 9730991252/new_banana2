@@ -9,7 +9,7 @@ from django.contrib import messages
 import time
 from datetime import date
 # Create your views here.
-def download_all_company_report(request):
+def download_all_company_report(request, month):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
@@ -18,14 +18,14 @@ def download_all_company_report(request):
             'e':e,
             'company':Company.objects.filter(shope_id=e.shope_id),
             'last_year':last_year,
-            'today_date':date.today()
-
+            'today_date':date.today(),
+            'month':month
         }
         return render(request, 'report/download_all_company_report.html', context)
     else:
         return redirect('login')
     
-def download_all_farmer_report(request):
+def download_all_farmer_report(request, month):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
@@ -34,12 +34,14 @@ def download_all_farmer_report(request):
             'e':e,
             'farmer':Farmer.objects.filter(shope_id=e.shope_id),
             'last_year':last_year,
-            'today_date':date.today()
+            'today_date':date.today(),
+            'month':month
 
         }
         return render(request, 'report/download_all_farmer_report.html', context)
     else:
         return redirect('login')
+    
 def download_single_company_report(request, id):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']

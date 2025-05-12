@@ -8,14 +8,32 @@
     welcome - {{e.name}}
 </div>
 {% include 'include/office/office_menu.html' %}
+
+<input type="month" id="month_i" class="form-control" style="width: 350px; margin: 0 auto;">
+
+<br>
+
+
 <div class="container row text-center">
     <div class="col-6 text-center">
-        <a href="/report/download_all_company_report/" class="btn btn-success">Company <i class="fa fa-download" aria-hidden="true"></i></a>
+        <button onclick="Company_redirect()" class="btn btn-success">Company <i class="fa fa-download" aria-hidden="true"></i></button>
     </div>
     <div class="col-6 text-center">
-        <a href="/report/download_all_farmer_report/" class="btn btn-info">Farmer <i class="fa fa-download" aria-hidden="true"></i></a>
+        <button onclick="Farmer_redirect()" class="btn btn-info">Farmer <i class="fa fa-download" aria-hidden="true"></i></button>
     </div>
 
+    <script>
+        function Company_redirect(){
+            if (document.getElementById("month_i").value != ""){
+                location.href = "/report/download_all_company_report/" + document.getElementById("month_i").value;
+            }
+        }
+        function Farmer_redirect(){
+            if (document.getElementById("month_i").value != ""){
+                location.href = "/report/download_all_farmer_report/" + document.getElementById("month_i").value;
+            }
+        }
+    </script>
 </div>
 
 {% endblock content %}
