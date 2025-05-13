@@ -42,9 +42,9 @@
     </script>
         {% for u in all_users %}
             <div>{{u.name}}</div>
-            <div style="color: red;font-weight: 700;">{% user_pending_bill_amount u.id as user_pending_bill_amount %}{{user_pending_bill_amount}}</div>
+            <div style="color: red;font-weight: 700;">{% user_pending_bill_amount u.id as user_pending_bill_amount %}{{user_pending_bill_amount|floatformat:2}}</div>
             <script>
-                total_amount += Number('{{user_pending_bill_amount}}')
+                total_amount += Number('{{user_pending_bill_amount|floatformat:2}}')
             </script>
         {% endfor %}
         <div class="total">एकूण <strong id="user_total_amount" class="ms-2 text-danger"></strong> </div>

@@ -185,7 +185,7 @@
             <div style="font-weight: 700; color: red;" class="div2">{{bill.prise}}</div>
             
             <div class="div1">रक्कम </div>
-            <div class="div2">{{amount}}</div>
+            <div class="div2">{{amount|floatformat:2}}</div>
             
             <div class="div1" id="service_charge1">सर्व्हिस चार्ज रक्कम (अधिक)</div>
             <div class="div2" id="service_charge2">{{bill.service_charge}}</div>
