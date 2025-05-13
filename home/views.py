@@ -36,7 +36,18 @@ def index(request):
     return render(request, 'home/index.html')
 
 def terms_and_conditions(request):
-    return render(request, 'home/terms_and_conditions.html')
+    if request.session.has_key('office_mobile'):
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        context={
+            'e':e,
+            'bill':Farmer_bill.objects.filter(id=31).first(),
+            'all_users':office_employee.objects.filter(shope_id=e.shope.id)
+
+        }
+        return render(request, 'home/terms_and_conditions.html', context)
+    else:
+        return redirect('login')
 
 def login(request):
     if request.session.has_key('office_mobile'):

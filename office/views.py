@@ -7,8 +7,7 @@ from num2words import num2words
 from django.db.models import Avg, Sum, Min, Max
 from django.contrib import messages 
 import time
-import datetime
-from datetime import date
+from datetime import date, datetime
 from .templatetags.office_tag import *
 import razorpay
 from django.conf import settings
@@ -20,7 +19,6 @@ def office_home(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
-        check_payment(e.shope)
         context={
             'e':e,
             'bill':Farmer_bill.objects.filter(id=31).first(),
@@ -60,7 +58,7 @@ def check_payment(shope):
     shope_payment = Auto_Shope_payment.objects.filter(shope=shope, is_paid=False,).last()
     if shope_payment:
         payments = client.order.payments(shope_payment.razorpay_order_id)
-        if payments:
+        if payments['items']:
             payment_paid = payments['items'][0]['status']
             if payment_paid == 'captured':
                 shope_payment.is_paid = True
@@ -193,15 +191,15 @@ def money_company_details(request,id):
             if 'phone_pe'in request.POST:
                 amount = request.POST.get('phone_pe_amount')
                 phonepe_number = request.POST.get('phonepe_number')
-                date=request.POST.get('date')
-                save_phonepe_company_amount(date, amount, e.shope_id, e.id,id, phonepe_number)
+                phone_pe_date=request.POST.get('date')
+                save_phonepe_company_amount(phone_pe_date, amount, e.shope_id, e.id,id, phonepe_number)
                 return redirect('money_company_details', id=id)
 
             if 'bank'in request.POST:
                 amount = request.POST.get('bank_amount')
                 bank_number = request.POST.get('bank_number')
-                date = request.POST.get('date')
-                save_bank_company_amount(date, amount, e.shope_id, e.id,id, bank_number)
+                bank_date = request.POST.get('date')
+                save_bank_company_amount(bank_date, amount, e.shope_id, e.id,id, bank_number)
                 return redirect('money_company_details', id=id)
             if 'edit_transition'in request.POST:
                 t_id = request.POST.get('id')
@@ -212,7 +210,7 @@ def money_company_details(request,id):
                     bank_number = request.POST.get('bank_number')
                 elif payment_type == 'PhonePe':
                     phonepe_number = request.POST.get('phonepe_number')
-                date = request.POST.get('date')
+                edit_transition_date = request.POST.get('date')
                 amount = request.POST.get('amount')
                 
                 
@@ -228,7 +226,7 @@ def money_company_details(request,id):
                 else:
                     trans.bank_number = None
                     trans.phonepe_number = None
-                trans.date = date
+                trans.date = edit_transition_date
                 trans.amount = amount
                 trans.save()
                 
@@ -253,7 +251,7 @@ def money_company_details(request,id):
             'transaction':company_recived_payment_transaction.objects.filter(company_id=id).order_by('payment_type','date'),
             'bill':Company_bill.objects.filter(company_id=id).order_by('-date'),
             'remening_amount':remening_amount,
-            'today_date':datetime.date.today(),
+            'today_date':date.today(),
             'opning_balance':Company_opning_balance.objects.filter(company_id=id).first()
         }
         return render(request, 'office/money_company_details.html', context)
@@ -327,15 +325,15 @@ def money_farmer_details(request,id):
             if 'phone_pe'in request.POST:
                 amount = request.POST.get('phone_pe_amount')
                 phonepe_number = request.POST.get('phonepe_number')
-                date=request.POST.get('date')
-                save_phonepe_farmer_amount(date, amount, e.shope_id, e.id,id, phonepe_number)
+                phone_pe_date=request.POST.get('date')
+                save_phonepe_farmer_amount(phone_pe_date, amount, e.shope_id, e.id,id, phonepe_number)
                 return redirect('money_farmer_details', id=id)
 
             if 'bank'in request.POST:
                 amount = request.POST.get('bank_amount')
                 bank_number = request.POST.get('bank_number')
-                date = request.POST.get('date')
-                save_bank_farmer_amount(date, amount, e.shope_id, e.id,id, bank_number)
+                bank_date = request.POST.get('date')
+                save_bank_farmer_amount(bank_date, amount, e.shope_id, e.id,id, bank_number)
                 return redirect('money_farmer_details', id=id)
         context={ 
             'e':e,
@@ -347,7 +345,7 @@ def money_farmer_details(request,id):
             'transaction':Farmer_payment_transaction.objects.filter(farmer_id=id).order_by('date'),
             'total_amount':Farmer_payment_transaction.objects.filter(farmer_id=id).aggregate(Sum('amount'))['amount__sum'],
             'remening_amount':remening_amount,
-            'today_date':datetime.date.today()
+            'today_date':date.today()
         }
         return render(request, 'office/money_farmer_details.html', context)
     else:
@@ -1042,7 +1040,7 @@ def new_farmer_bill(request):
         if 'complete_bill'in request.POST:
             farmer_id = request.POST.get('farmer_id')
             shope_id = e.shope.id
-            date = request.POST.get('date')
+            farmer_bill_date = request.POST.get('date')
             vehicale_number = request.POST.get('vehicale_number')
             total_vehicale_weight = request.POST.get('total_vehicale_weight')
             empty_vehicale_weight = request.POST.get('empty_vehicale_weight')
@@ -1071,7 +1069,7 @@ def new_farmer_bill(request):
                 bill_number=bill_number,
                 labor_amount=labor_amount,
                 leaf_weight=int(math.floor(float(leaf_weight))),
-                date=date
+                date=farmer_bill_date
             ).save()
             f = Farmer_bill.objects.filter(shope_id=shope_id).last()
             return redirect(f'/office/view_farmer_bill/{f.id}')
@@ -1080,7 +1078,7 @@ def new_farmer_bill(request):
             'selected_farmer_status':selected_farmer_status,
             'farmer':farmer,
             'leaf_weight':Farmer_services.objects.filter(shope_id=e.shope.id,name='Leaf Weight').first(),
-            'date_today':datetime.date.today(),
+            'date_today':date.today(),
         }
         return render(request, 'office/new_farmer_bill.html', context)
     else:
@@ -1141,7 +1139,7 @@ def view_farmer_bill(request, id):
             'total_credit':total_credit,
             'total_pending_amount':total_pending_amount,
             'logo':Logo.objects.filter(shope_id=e.shope.id).first(),
-            'date_today':datetime.date.today(),
+            'date_today':date.today(),
         }
         return render(request, 'office/view_farmer_bill.html', context)
     else:
