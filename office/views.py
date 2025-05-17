@@ -1209,6 +1209,7 @@ def profile(request):
             if 'edit_profile'in request.POST:
                 shope_name = request.POST.get('shope_name')
                 owner_name = request.POST.get('owner_name')
+                pin = request.POST.get('pin')
                 address = request.POST.get('address')
                 description = request.POST.get('description')
                 contact_details = request.POST.get('contact_details')
@@ -1217,8 +1218,10 @@ def profile(request):
                 e.shope.address = address
                 e.shope.description = description
                 e.shope.contact_details = contact_details
+                e.pin = pin
+                e.save()
                 e.shope.save()
-
+                messages.success(request, 'Profile Updated Successfully')
         else:
             del request.session['office_mobile']
             
