@@ -51,7 +51,10 @@ def terms_and_conditions(request):
 
 def login(request):
     if request.session.has_key('office_mobile'):
-        return redirect('office_home')
+        mobile = request.session['office_mobile']
+        e = office_employee.objects.filter(mobile=mobile).first()
+        if e:
+            return redirect('office_home')
     else:
         if request.method == "POST":
             number=request.POST ['number']

@@ -19,6 +19,10 @@ def office_home(request):
     if request.session.has_key('office_mobile'):
         mobile = request.session['office_mobile']
         e = office_employee.objects.filter(mobile=mobile).first()
+        if e:
+            pass
+        else:
+            return redirect('login')
         context={
             'e':e,
             'bill':Farmer_bill.objects.filter(id=31).first(),
