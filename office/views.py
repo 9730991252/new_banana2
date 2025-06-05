@@ -59,14 +59,16 @@ def softwar_charges(request):
 client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
 def check_payment(shope):
-    shope_payment = Auto_Shope_payment.objects.filter(shope=shope, is_paid=False,).last()
-    if shope_payment:
+    shope_payment = Auto_Shope_payment.objects.filter(shope=shope, is_paid=False, added_date=date.today())
+    for shope_payment in shope_payment:
         payments = client.order.payments(shope_payment.razorpay_order_id)
         if payments['items']:
             payment_paid = payments['items'][0]['status']
             if payment_paid == 'captured':
                 shope_payment.is_paid = True
                 shope_payment.save()
+    Auto_Shope_payment.objects.filter(shope=shope, is_paid=False, added_date=date.today()).delete()
+    
 
 def create_payment(request):
     if request.method == 'GET':
