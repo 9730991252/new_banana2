@@ -268,22 +268,50 @@ def product_cost_net_weight(weight, empty_box):
     a = (weight - empty_box)
     return a
 
+import calendar
 @register.simple_tag()
 def check_shop_payment(shope_id):
     today_date = date.today()
     status = ''
+
+    # 🔁 Safe previous month calculation
+    if today_date.month == 1:
+        last_month_year = today_date.year - 1
+        last_month = 12
+    else:
+        last_month_year = today_date.year
+        last_month = today_date.month - 1
+
+    # 🔁 Adjust day to avoid invalid dates (like 31st Feb)
+    last_day_of_last_month = calendar.monthrange(last_month_year, last_month)[1]
+    safe_day = min(today_date.day, last_day_of_last_month)
+    last_month_date = date(last_month_year, last_month, safe_day)
+
+    # 🔎 Check status
     if today_date < date(today_date.year, today_date.month, 6):
         status = 'show_worning'
-    elif Shope_payment.objects.filter(shope_id=shope_id, from_date__year=today_date.year, from_date__month=today_date.month-1).exists():
+    elif Shope_payment.objects.filter(
+        shope_id=shope_id,
+        from_date__year=last_month_year,
+        from_date__month=last_month
+    ).exists():
         status = 'paid'
-    asp = Auto_Shope_payment.objects.filter(shope_id=shope_id, added_date__year=today_date.year, month=month.Month(date.today().year, date.today().month - 1)).last()
-    if asp:
-        if asp.is_paid == True:
-            status = 'paid'
-    if status == 'show_worning' or status == '' and today_date > date(today_date.year, today_date.month, 5):
+
+    asp = Auto_Shope_payment.objects.filter(
+        shope_id=shope_id,
+        added_date__year=last_month_year,
+        month__month=last_month,
+        month__year=last_month_year
+    ).last()
+
+    if asp and asp.is_paid:
+        status = 'paid'
+
+    if (status == 'show_worning' or status == '') and today_date > date(today_date.year, today_date.month, 5):
         status = 'disable'
-    return {'status':status, 'last_month':date(today_date.year, today_date.month-1, today_date.day)}
- 
+
+    return {'status': status, 'last_month': last_month_date}
+
 @register.simple_tag()
 def user_pending_bill_amount(office_employee_id):
     amount = Farmer_bill.objects.filter(office_employee_id=office_employee_id).aggregate(Sum('total_amount'))['total_amount__sum']
