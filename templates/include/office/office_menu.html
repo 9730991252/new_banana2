@@ -9,12 +9,32 @@
 {% load office_tag %}
 {% load static %}
 {% check_shop_payment e.shope_id as check_shop_payment %}
+{% if check_shop_payment.status == 'disable' %}
 <div class="menu">
     <a  href="/office/office_home/"  class="my-1 {% if request.path == '/office/office_home/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">Home</a>
-    <a  href="/office/new_farmer_bill/"  class="my-1 {% if request.path == '/office/new_farmer_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}" {% if check_shop_payment.status == 'disable' %} style="pointer-events: none;" {% endif %}>शेतकरी नवीन बिल</a>
-    <a  href="/office/farmer_bill/" class="my-1 {% if request.path == '/office/farmer_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">शेतकरी मागील बिल</a>
+    <a  onclick="show_payment_alert()"    class="my-1 {% if request.path == '/office/new_farmer_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">शेतकरी नवीन बिल</a>
+    <a  onclick="show_payment_alert()"    class="my-1 {% if request.path == '/office/farmer_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}" >शेतकरी मागील बिल</a>
+    <a  onclick="show_payment_alert()"    class="my-1 {% if request.path == '/office/farmer/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">शेतकरी</a>
+    <a  onclick="show_payment_alert()"    class="my-1 {% if request.path == '/office/new_company_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">कंपनी नवीन बिल</a>
+    <a  onclick="show_payment_alert()"    class="my-1 {% if request.path == '/office/company_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">कंपनी मागील बिल</a>
+    <a  onclick="show_payment_alert()"    class="my-1 {% if request.path == '/office/money/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">कंपनी पेमेंट</a>
+    <a  onclick="show_payment_alert()"    class="my-1 {% if request.path == '/office/company/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">कंपनी</a>
+    <a  onclick="show_payment_alert()"    class="my-1 {% if request.path == '/office/report/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">Report</a>
+    <a  href="/terms_and_conditions/" class="my-1 {% if request.path == '/terms_and_conditions/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">अटी व शर्ती</a>
+    <a  onclick="show_payment_alert()"    class="my-1 {% if request.path == '/office/add_employee/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">कर्मचारी</a>
+    <a  onclick="show_payment_alert()"    class="my-1 {% if request.path == '/office/profile/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">प्रोफाइल</a>
+    <a  onclick="show_payment_alert()"    class="my-1 {% if request.path == '/office/logo/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">लोगो</a>
+    <a  onclick="show_payment_alert()"    class="my-1 {% if request.path == '/office/signature/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">स्वाक्षरी</a>
+    <a  href="/office/softwar_charges/" class="my-1 {% if request.path == '/office/softwar_charges/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">सॉफ्टवेअर चार्ज</a>
+    <a href="/office_logout/" class="btn btn-danger my-1">Logout</a>
+</div>
+{% else %}
+<div class="menu">
+    <a  href="/office/office_home/"  class="my-1 {% if request.path == '/office/office_home/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">Home</a>
+    <a  href="/office/new_farmer_bill/"  class="my-1 {% if request.path == '/office/new_farmer_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">शेतकरी नवीन बिल</a>
+    <a  href="/office/farmer_bill/" class="my-1 {% if request.path == '/office/farmer_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}" >शेतकरी मागील बिल</a>
     <a  href="/office/farmer/" class="my-1 {% if request.path == '/office/farmer/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">शेतकरी</a>
-    <a  href="/office/new_company_bill/" class="my-1 {% if request.path == '/office/new_company_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}" {% if check_shop_payment.status == 'disable' %} style="pointer-events: none;" {% endif %}>कंपनी नवीन बिल</a>
+    <a  href="/office/new_company_bill/" class="my-1 {% if request.path == '/office/new_company_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">कंपनी नवीन बिल</a>
     <a  href="/office/company_bill/" class="my-1 {% if request.path == '/office/company_bill/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">कंपनी मागील बिल</a>
     <a  href="/office/money/" class="my-1 {% if request.path == '/office/money/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">कंपनी पेमेंट</a>
     <a  href="/office/company/" class="my-1 {% if request.path == '/office/company/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">कंपनी</a>
@@ -27,6 +47,7 @@
     <a  href="/office/softwar_charges/" class="my-1 {% if request.path == '/office/softwar_charges/' %}btn btn-warning{% else %}btn btn-primary{% endif %}">सॉफ्टवेअर चार्ज</a>
     <a href="/office_logout/" class="btn btn-danger my-1">Logout</a>
 </div>
+{% endif %}
 
 {% if check_shop_payment.status == 'show_worning' or check_shop_payment.status == 'disable' %}
 <div class="container">
@@ -72,4 +93,12 @@
         })
 
     })
+
+    function show_payment_alert(){
+        Swal.fire({
+            title: "तुमचे Aug महिन्याचे सॉफ्टवेर चार्जेस बाकी आहेत ",
+            text: "",
+            icon: "error",
+        });
+    }
 </script>

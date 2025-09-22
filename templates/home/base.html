@@ -22,6 +22,99 @@
     {% block content %}{% endblock content %}
     <!-- End Example Code -->
     {% block script %}{% endblock script %}
+
+    <style>
+          #loader{
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        z-index: +231111111111111111111111111111111111111111111111111;
+        background-color: rgb(255, 255, 255);
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        display: none;
+        p{
+          margin-top: -50px;
+        }
+      }
+</style>
+    <div id="loader">
+      <img src="{% static 'img/loader.gif' %}" alt="">
+      <p>Loading Please Wait...</p>
+    </div>
+<script>
+window.addEventListener("beforeunload", function () {
+  document.getElementById('loader').style.display = 'flex'
+});
+  </script>
+
+
+<script>
+  // Disable Right Click
+  window.addEventListener('contextmenu', function(event) {
+    event.preventDefault();
+    Swal.fire({
+      icon: 'warning',
+      title: 'Action Blocked!',
+      text: 'Right Click is Disabled 🚫',
+      confirmButtonColor: '#d33'
+    });
+  });
+
+  // Disable F12, Ctrl+U, Ctrl+Shift+I, Ctrl+Shift+C
+  window.addEventListener('keydown', function(event) {
+    // Block F12
+    if (event.key === 'F12') {
+      event.preventDefault();
+      Swal.fire({
+        icon: 'error',
+        title: 'Developer Tools Disabled',
+        text: 'Access is Restricted 🚫',
+        confirmButtonColor: '#3085d6'
+      });
+    }
+
+    // Block Ctrl+U
+    if (event.ctrlKey && event.key.toLowerCase() === 'u') {
+      event.preventDefault();
+      Swal.fire({
+        icon: 'info',
+        title: 'View Source Disabled',
+        text: 'You cannot view the page source 🚫',
+        confirmButtonColor: '#3085d6'
+      });
+    }
+
+    // Block Ctrl+Shift+I (Inspect)
+    if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'i') {
+      event.preventDefault();
+      Swal.fire({
+        icon: 'warning',
+        title: 'Inspect Disabled',
+        text: 'Developer tools are blocked 🚫',
+        confirmButtonColor: '#d33'
+      });
+    }
+
+    // Block Ctrl+Shift+C (Element Inspector)
+    if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'c') {
+      event.preventDefault();
+      Swal.fire({
+        icon: 'warning',
+        title: 'Element Inspector Disabled',
+        text: 'Access is restricted 🚫',
+        confirmButtonColor: '#d33'
+      });
+    }
+  });
+</script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
    
   </body>

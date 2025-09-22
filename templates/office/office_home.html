@@ -8,12 +8,12 @@
     welcome - {{e.name}}
 </div>
 {% include 'include/office/office_menu.html' %}
-<div class="container">
+{% check_shop_payment e.shope_id as check_shop_payment %}
 
-{% user_pendding_all_amount e.shope_id %}
-<br>
-{% company_pendding_all_amount e.shope_id %}
-
+<div class="container" {% if check_shop_payment.status == 'disable' %} style="pointer-events: none; filter: blur(3px);user-select: none;" {% endif %}>
+    {% user_pendding_all_amount e.shope_id %}
+    <br>
+    {% company_pendding_all_amount e.shope_id %}
 </div>
 
 

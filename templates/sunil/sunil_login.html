@@ -59,13 +59,13 @@ function check_number(){
 function check_pin(){
     pin=document.getElementById('pin').value;
 
-    if (pin.length <= 3 ){
+    if (pin.length <= 9 ){
     document.getElementById('pin').style.borderColor ='green';return false;
   }
-    if (pin.length >= 5 ){
+    if (pin.length >= 11 ){
     alert('only 4 digit number Secret Pin')
   }
-    if (pin.length == 4 ){
+    if (pin.length == 10 ){
         document.getElementById('pin').style.borderColor ='';return true;
        
   }
