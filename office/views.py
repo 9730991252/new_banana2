@@ -267,7 +267,7 @@ def money_company_details(request,id):
 def change_company_bill_paid_status(company_id):
     b_opn = Company_opning_balance.objects.filter(company_id=company_id).first()
     print(b_opn)
-    recived_payment = company_recived_payment_transaction.objects.filter(company_id=company_id).aggregate(Sum('amount'))['amount__sum']
+    recived_payment = company_recived_payment_transaction.objects.filter(company_id=company_id).aggregate(Sum('amount'))['amount__sum'] or 0
     if b_opn:
         if b_opn.type == 0:
             recived_payment -= int(b_opn.balance)
