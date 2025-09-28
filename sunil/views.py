@@ -8,7 +8,7 @@ def sunil_login(request):
     if request.method == 'POST':
         a =int(request.POST["number"])
         b =int(request.POST["pin"])
-        if a== 9730991252 and b== 876790143:
+        if a== 9730991252 and b== 8767900143:
             request.session['sunil_mobile'] = a
             return redirect('sunil_home')
         else:
