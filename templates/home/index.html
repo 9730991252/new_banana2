@@ -1,244 +1,573 @@
 {% extends 'home/base.html' %}
 
 {% block head %}
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 {% endblock head %}
 
 {% block content %}
+{% load static %}
+{% include 'include/alert.html' %}
 
-    {% include 'include/alert.html' %}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-    <style>
-        /* Reset basic styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        scroll-behavior: smooth;
+    }
 
-        /* Body and Background */
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            background-color: #f8f9fa;
-        }
+    /* Navbar - Dark Mode */
+    .navbar {
+        background: linear-gradient(90deg, #000000, #343a40);
+        padding: 12px 20px;
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
 
+    .navbar-brand img {
+        width: 45px;
+        height: 45px;
+        margin-right: 10px;
+    }
 
-        /* Hero Section with Image */
-        .hero {
-            /* background: url('https://img.freepik.com/premium-photo/bananas-high-quality-4k-hdr_889056-21122.jpg') no-repeat center scroll; */
-            /* background: url('https://static.vecteezy.com/system/resources/thumbnails/024/040/721/small_2x/close-shot-of-banana-tree-with-ripe-fruits-created-by-generative-ai-technology-photo.jpg') no-repeat center center; */
-            background: url('https://images2.alphacoders.com/133/thumb-1920-1338260.png') no-repeat center center;
-            background-size: cover;
-            height: 95vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            color: #ffffff;
-        }
+    .navbar-brand {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: #ffcc00 !important;
+        letter-spacing: 0.5px;
+    }
 
-        .hero-content {
-            background-color: rgba(255, 242, 53, 0.5);
-            padding: 40px;
-            border-radius: 8px;
-            color: black;
-        }
-        .navbar{
-            position: sticky;
-            top: 0;
+    .nav-link {
+        color: #f8f9fa !important;
+        font-weight: 500;
+        margin: 0 10px;
+        transition: 0.3s;
+    }
+
+    .nav-link:hover {
+        color: #ffcc00 !important;
+        transform: scale(1.05);
+    }
+
+    /* Hero Section */
+    .hero {
+        background: url('https://images2.alphacoders.com/133/thumb-1920-1338260.png') center center/cover no-repeat;
+        height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+    }
+
+    .hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+    }
+
+    .hero-content {
+        position: relative;
+        color: #fff;
+        z-index: 2;
+        background-color: rgba(255, 255, 255, 0.15);
+        padding: 40px 60px;
+        border-radius: 16px;
+        backdrop-filter: blur(8px);
+        animation: fadeIn 2s ease;
+    }
+
+    .hero h1 {
+        font-size: 3.2rem;
+        font-weight: 700;
+        color: #ffcc00;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        margin: 20px 0;
+        color: #fff;
+    }
+
+    .hero a {
+        padding: 12px 35px;
+        background-color: #ffcc00;
+        color: #000;
+        text-decoration: none;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .hero a:hover {
+        background-color: #ffc107;
+        transform: scale(1.05);
+    }
+
+    /* About Section */
+    .about {
+        padding: 80px 10%;
+        text-align: center;
+        background: linear-gradient(to bottom, #fff, #fef5e7);
+    }
+
+    .about h2 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+        color: #ff6600;
+    }
+
+    .about p {
+        font-size: 1.1rem;
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.8;
+        color: #555;
+    }
+
+    /* Features */
+    .features {
+        padding: 80px 10%;
+        background: #fff;
+        text-align: center;
+    }
+
+    .features h2 {
+        font-size: 2.5rem;
+        margin-bottom: 40px;
+        color: #ff6600;
+    }
+
+    .feature-box {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+    }
+
+    .feature {
+        background: #f8f8f8;
+        border-radius: 16px;
+        padding: 40px 25px;
+        width: 320px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+    }
+
+    .feature:hover {
+        transform: translateY(-10px);
+        background-color: #fff9e6;
+    }
+
+    .feature h3 {
+        color: #ff4e50;
+        margin-bottom: 15px;
+    }
+
+    /* Pricing Section */
+    .pricing {
+        background: linear-gradient(180deg, #fffbe0, #ffefba);
+        padding: 80px 10%;
+        text-align: center;
+    }
+
+    .pricing h2 {
+        font-size: 2.5rem;
+        margin-bottom: 40px;
+        color: #ff6600;
+    }
+
+    .pricing-cards {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .price-card {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        transition: 0.3s;
+    }
+
+    .price-card:hover {
+        transform: translateY(-10px);
+        border: 2px solid #ff6600;
+    }
+
+    .price-card h3 {
+        color: #ff4e50;
+        margin-bottom: 10px;
+    }
+
+    .price-card h4 {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    .price-card p {
+        font-size: 1rem;
+        color: #555;
+    }
+
+    /* Contact Section */
+    .contact {
+        background: #fff;
+        padding: 80px 10%;
+        text-align: center;
+    }
+
+    .contact h2 {
+        color: #ff6600;
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+
+    .contact form {
+        max-width: 600px;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .contact input,
+    .contact textarea {
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        outline: none;
+    }
+
+    .contact button {
+        padding: 12px;
+        background: #ff6600;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .contact button:hover {
+        background: #ff4e50;
+    }
+
+    /* Footer */
+    footer {
+        background: #000;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        font-size: 0.9rem;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+        .feature-box, .pricing-cards {
+            flex-direction: column;
         }
         .hero h1 {
-            font-size: 50px;
-            margin-bottom: 20px;
+            font-size: 2rem;
         }
+    }
+</style>
 
-        .hero p {
-            font-size: 22px;
-            margin-bottom: 30px;
-        }
-
-        .hero button {
-            padding: 12px 30px;
-            font-size: 18px;
-            background-color: #28a745;
-            color: #ffffff;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .hero button:hover {
-            background-color: #218838;
-        }
-
-        /* Features Section */
-        .features {
-            padding: 50px 20px;
-            background-color: #ffffff;
-        }
-        .navbar{
-            background-color: #343a4000;
-        }
-        .features h2 {
-            text-align: center;
-            font-size: 36px;
-            margin-bottom: 40px;
-        }
-
-        .feature-box {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .feature {
-            background-color: #f1f1f1;
-            padding: 20px;
-            border-radius: 8px;
-            flex-basis: 30%;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .feature h3 {
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-
-        .feature p {
-            font-size: 18px;
-        }
-
-        /* Footer Section */
-        footer {
-            background-color: #343a40;
-            color: #ffffff;
-            text-align: center;
-            padding: 20px;
-        }
-
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-            /* Navbar: show hamburger button */
-            header .navbar-toggler {
-                display: block;
-            }
-
-            header nav ul {
-                display: none;
-                width: 100%;
-                text-align: center;
-                padding-top: 10px;
-            }
-
-            header nav ul li {
-                margin: 15px 0;
-            }
-
-            header nav ul li a {
-                font-size: 20px;
-            }
-
-            /* Hero Section */
-            .hero h1 {
-                font-size: 30px;
-                margin-bottom: 15px;
-            }
-
-            .hero p {
-                font-size: 18px;
-                margin-bottom: 20px;
-            }
-
-            .hero button {
-                padding: 10px 20px;
-                font-size: 16px;
-            }
-
-            /* Features Section */
-            .features h2 {
-                font-size: 28px;
-                margin-bottom: 30px;
-            }
-
-            .feature-box {
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            .feature {
-                flex-basis: 100%;
-            }
-        }
-
-        /* Extra small screen */
-        @media (max-width: 480px) {
-            .hero h1 {
-                font-size: 24px;
-            }
-
-            .hero p {
-                font-size: 16px;
-            }
-
-            .hero button {
-                padding: 8px 16px;
-                font-size: 14px;
-            }
-
-            .features h2 {
-                font-size: 22px;
-            }
-        }
-
-    </style>
-    {% include 'include/navbar.html' %}
-
-    <!-- Hero Section with Image -->
-    <section class="hero">
-        
-        <div class="hero-content">
-            <h1>Welcome to Banana Bill</h1>
-            <p>"Your trusted solution for billing management."</p>
-            <a href="/login/" class="btn btn-primary">Login</a>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="{% static 'img/logo.png' %}" alt="Logo"> Banana Bill
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="#hero">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#features">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="#pricing">Pricing</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login/">Login</a></li>
+            </ul>
         </div>
-    </section>
+    </div>
+</nav>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="container">
-            <h2>Our Features</h2>
-            <div class="feature-box">
-                <div class="feature">
-                    <h3>Fast Billing</h3>
-                    <p>Experience quick and efficient bill processing.</p>
-                </div>
-                <div class="feature">
-                    <h3>Low Cost</h3>
-                    <p>Enjoy the sweet savings with our affordable banana billing—quality fruit, lower prices!</p>
-                </div>
-                <div class="feature">
-                    <h3>Customer Support</h3>
-                    <p>Our support team is here to assist you anytime.</p>
-                </div>
-            </div>
+<section class="hero">
+    <div class="hero-content">
+        <h1>Welcome to Banana Bill 🍌</h1>
+        <p>Your trusted, fast, and affordable billing management platform.</p>
+        <a href="/login/">Get Started & Login</a>
+    </div>
+</section>
+
+<section class="about">
+    <h2>About Us</h2>
+    <p>At Banana Bill, we simplify billing for small and medium businesses with a clean, user-friendly interface and
+        lightning-fast performance. Our goal is to help you save time, reduce errors, and manage your business smarter.
+    </p>
+</section>
+
+<section class="features">
+    <h2>Our Features</h2>
+    <div class="feature-box">
+        <div class="feature">
+            <h3>⚡ Fast Billing</h3>
+            <p>Generate bills within seconds and keep your workflow seamless.</p>
         </div>
-    </section>
-
-    <!-- Footer Section -->
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Banana Bill. All Rights Reserved.</p>
+        <div class="feature">
+            <h3>💰 Affordable Plans</h3>
+            <p>High-quality service at a price designed for every business owner.</p>
         </div>
-    </footer>
+        <div class="feature">
+            <h3>📊 Smart Dashboard</h3>
+            <p>Track your daily sales, invoices, and profits in one place.</p>
+        </div>
+    </div>
+</section>
 
-    <script>
-        // Toggle mobile navigation
-        document.getElementById('navbar-toggler').addEventListener('click', function() {
-            const nav = document.getElementById('navbar');
-            nav.querySelector('ul').style.display = (nav.querySelector('ul').style.display === 'block') ? 'none' : 'block';
-        });
-    </script>
+<section class="pricing">
+    <h2>Pricing Plans</h2>
+    <div class="pricing-cards">
+        <div class="price-card">
+            <h3>Enterprise</h3>
+            <h4>₹500/mo</h4>
+            <p>Full access to all advanced billing and inventory features.</p>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Contact Section Styling */
+.contact-section {
+  background: radial-gradient(circle at top left, #1f1f1f, #0d0d0d);
+  color: white;
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.contact-container {
+  max-width: 700px;
+  margin: auto;
+}
+
+.contact-title {
+  font-size: 2.8rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.contact-subtitle {
+  color: #ccc;
+  font-size: 1.1rem;
+  margin-bottom: 50px;
+}
+
+.contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+}
+
+.contact-card {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  padding: 15px 25px;
+  border-radius: 12px;
+  color: #00b4d8;
+  font-size: 1.1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 180, 216, 0.1);
+}
+
+.contact-card:hover {
+  background: #00b4d8;
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 0 20px rgba(0, 180, 216, 0.5);
+}
+
+.contact-card i {
+  font-size: 1.4rem;
+}
+
+</style>
+<!-- Contact Section -->
+<section id="contact" class="contact-section">
+  <div class="contact-container">
+    <h2 class="contact-title">Contact Us</h2>
+    <p class="contact-subtitle">We’d love to hear from you! Reach out to us anytime.</p>
+    <div class="contact-details">
+      <a href="tel:+919730991252" class="contact-card">
+        <i class="fas fa-phone-alt"></i>
+        <span>9730991252</span>
+      </a>
+      <a href="mailto:prasannadigital101@gmail.com" class="contact-card">
+        <i class="fas fa-envelope"></i>
+        <span>prasannadigital101@gmail.com</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+    /* Signup Section Styling */
+.signup-section {
+  background: linear-gradient(180deg, #0d0d0d, #1a1a1a);
+  color: #fff;
+  padding: 100px 20px;
+  text-align: center;
+}
+
+.signup-container {
+  max-width: 700px;
+  margin: auto;
+  background: #121212;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 0 25px rgba(0, 180, 216, 0.15);
+  border: 1px solid #1f1f1f;
+}
+
+.signup-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  color: #00b4d8;
+}
+
+.signup-subtitle {
+  color: #ccc;
+  margin-bottom: 40px;
+  font-size: 1.1rem;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  text-align: left;
+}
+
+.form-group label {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 6px;
+  color: #ddd;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background: #1a1a1a;
+  color: white;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #00b4d8;
+  box-shadow: 0 0 10px rgba(0, 180, 216, 0.3);
+  outline: none;
+}
+
+.signup-btn {
+  background: #00b4d8;
+  border: none;
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+}
+
+.signup-btn:hover {
+  background: #0077b6;
+  box-shadow: 0 0 20px rgba(0, 180, 216, 0.4);
+  transform: translateY(-2px);
+}
+
+</style>
+<!-- Sign Up Section -->
+<section id="signup" class="signup-section">
+  <div class="signup-container">
+    <h2 class="signup-title">Register Your Shop</h2>
+    <p class="signup-subtitle">Join us and grow your business with ease</p>
+
+    <form method="POST" class="signup-form">
+        {% csrf_token %}
+      <div class="form-group">
+        <label>Shop Name</label>
+        <input type="text" name="shop_name" placeholder="Enter your shop name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Owner Name</label>
+        <input type="text" name="owner_name" placeholder="Enter owner's name" required>
+      </div>
+
+      <div class="form-group">
+        <label>Owner Mobile</label>
+        <input type="tel" name="owner_mobile" placeholder="Enter mobile number" required>
+      </div>
+
+      <div class="form-group">
+        <label>Address</label>
+        <input type="text" name="address" placeholder="Enter shop address" required>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" rows="3" placeholder="Write a short description" required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Contact Details</label>
+        <input type="text" name="contact_details" placeholder="Enter contact details" required>
+      </div>
+
+      <button type="submit" name="sine_up" class="signup-btn">Submit</button>
+    </form>
+  </div>
+</section>
+
+
+
+<footer>
+    <p>CopyRgiht © 2025 ; <b>Designed & Developed by. PRASANNA DIGITAL</b></p>
+</footer>
+
 {% endblock content %}

@@ -1,82 +1,197 @@
 {% extends 'home/base.html' %}
+
 {% block head %}
+{% load static %}
 {% endblock head %}
+
 {% block content %}
-{% include 'include/navbar.html' %}
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="{% static 'img/logo.png' %}" alt="Logo"> Banana Bill
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" href="/#hero">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#features">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="/#pricing">Pricing</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login/">Login</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
 {% include 'include/alert.html' %}
+
 <style>
-  *{
+  /* Reset */
+  * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
-</style>
-<style>
-    .login_box{
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        background-color: rgba(0, 0, 0, 0.1);
-        border-radius: 10px;
-        padding: 10px;
-        padding-top: 1px;
-        margin-top: 20px;
-        width: 300px;
-        margin: 0 auto;
+
+  body {
+    font-family: "Poppins", sans-serif;
+    background: radial-gradient(circle at top left, #0a0a0a, #1b1b1b);
+    color: white;
+    min-height: 100vh;
+  }
+
+  /* Navbar */
+  .navbar {
+    background: linear-gradient(90deg, #000000, #212529);
+    padding: 12px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .navbar-brand img {
+    width: 45px;
+    height: 45px;
+    margin-right: 10px;
+  }
+
+  .navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #ffcc00 !important;
+  }
+
+  .nav-link {
+    color: #f8f9fa !important;
+    font-weight: 500;
+    margin: 0 10px;
+    transition: 0.3s;
+  }
+
+  .nav-link:hover {
+    color: #ffcc00 !important;
+    transform: scale(1.05);
+  }
+
+  /* Login Section */
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 100px 20px;
+  }
+
+  .login_box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(12px);
+    border-radius: 20px;
+    padding: 50px 40px;
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 0 40px rgba(0, 180, 216, 0.2);
+    transition: 0.3s ease;
+  }
+
+  .login_box:hover {
+    box-shadow: 0 0 60px rgba(0, 180, 216, 0.4);
+  }
+
+  .login_box strong {
+    font-size: 2rem;
+    color: #00b4d8;
+    display: block;
+    margin-bottom: 30px;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+
+  /* Floating Input Fields */
+  .form-group {
+    position: relative;
+    margin-bottom: 25px;
+  }
+
+  .form-control {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #555;
+    color: #fff;
+    font-size: 1rem;
+    padding: 12px 0 8px;
+    transition: 0.3s ease;
+  }
+
+  .form-control:focus {
+    border-bottom-color: #00b4d8;
+    box-shadow: 0 1px 15px rgba(0, 180, 216, 0.3);
+    outline: none;
+  }
+
+  .form-label {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    color: #aaa;
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  .form-control:focus + .form-label,
+  .form-control:not(:placeholder-shown) + .form-label {
+    top: -15px;
+    font-size: 0.9rem;
+    color: #00b4d8;
+  }
+
+  /* Button */
+  .btn-primary {
+    background: #00b4d8;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    width: 100%;
+    transition: 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background: #0077b6;
+    box-shadow: 0 0 25px rgba(0, 180, 216, 0.4);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    .login_box {
+      padding: 30px 25px;
     }
+  }
 </style>
 
-
-<div class="container">
-    <div class="login_box">
-        <div class="text-center mt-2"><strong>Login</strong></div>
-        <form method="POST"> {% csrf_token %}
-            <br>
-            <div class="mb-3">
-            <input type="number" oninput="check_number()" name="number" placeholder="Enter Your Mobile Number" class="form-control" id="number" required>
-            </div>
-            <div class="mb-3">
-            <input oninput="check_pin()" name="pin" placeholder="Enter Your Secret pin" type="number" class="form-control" id="pin" required>
-            </div>
-            <div class="text-center">
-                <button type="submit" class="btn btn-primary" name="Login">Login</button>
-            </div>
-        </form>
-    </div>
+<!-- Login Section -->
+<div class="login-container">
+  <div class="login_box">
+    <strong>Login</strong>
+    <form method="POST">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="number" name="number" id="number" class="form-control" placeholder=" " required>
+        <label for="number" class="form-label">Mobile Number</label>
+      </div>
+      <div class="form-group">
+        <input type="password" name="pin" id="pin" class="form-control" placeholder=" " required>
+        <label for="pin" class="form-label">Secret Pin</label>
+      </div>
+      <button type="submit" class="btn btn-primary" name="Login">Login</button>
+    </form>
+  </div>
 </div>
-
-<script>
-
-function check_number(){
-    mobile=document.getElementById('number').value;
-
-    if (mobile.length <= 9 ){
-    document.getElementById('number').style.borderColor ='green';return false;
-  }
-  if (mobile.length >= 11 ){
-    alert('only 10 digit number ')
-  }
-    if (mobile.length == 10 ){
-        document.getElementById('number').style.borderColor ='';return true;
-       
-  }
-}
-function check_pin(){
-    pin=document.getElementById('pin').value;
-
-    if (pin.length <= 3 ){
-    document.getElementById('pin').style.borderColor ='green';return false;
-  }
-    if (pin.length >= 5 ){
-    alert('only 4 digit number Secret Pin')
-  }
-    if (pin.length == 4 ){
-        document.getElementById('pin').style.borderColor ='';return true;
-       
-  }
-}
-
-
-
-</script>
-
 
 {% endblock content %}
