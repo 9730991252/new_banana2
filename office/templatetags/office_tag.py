@@ -288,7 +288,7 @@ def check_shop_payment(shope_id):
     last_month_date = date(last_month_year, last_month, safe_day)
 
     # 🔎 Check status
-    if today_date < date(today_date.year, today_date.month, 6):
+    if today_date < date(today_date.year, today_date.month, 1):
         status = 'show_worning'
     elif Shope_payment.objects.filter(
         shope_id=shope_id,
