@@ -299,7 +299,7 @@ def check_shop_payment(shope_id):
 
     asp = Auto_Shope_payment.objects.filter(
         shope_id=shope_id,
-        added_date__year=last_month_year,
+        added_date__year=today_date.year,
         month__month=last_month,
         month__year=last_month_year
     ).last()
