@@ -307,7 +307,7 @@ def check_shop_payment(shope_id):
     if asp and asp.is_paid:
         status = 'paid'
 
-    if (status == 'show_worning' or status == '') and today_date > date(today_date.year, today_date.month, 5):
+    if (status == 'show_worning' or status == '') and today_date > date(today_date.year, today_date.month, 1):
         status = 'disable'
 
     return {'status': status, 'last_month': last_month_date}
