@@ -82,11 +82,17 @@ def sunil_home(request):
         for s in Shope.objects.all():
             today_date = date.today()
             status = ''
+            last_month = today_date.month-1
+            year_by_month = date.today().year
+            if last_month == 0:
+                last_month = 12
+                year_by_month = year_by_month-1
+
             if today_date < date(today_date.year, today_date.month, 6):
                 status = 'show_worning'
-            elif Shope_payment.objects.filter(shope_id=s.id, from_date__year=today_date.year, from_date__month=today_date.month-1).exists():
+            elif Shope_payment.objects.filter(shope_id=s.id, from_date__year=today_date.year, from_date__month=last_month).exists():
                 status = 'paid'
-            asp = Auto_Shope_payment.objects.filter(shope_id=s.id, added_date__year=today_date.year, month=month.Month(date.today().year, date.today().month - 1)).last()
+            asp = Auto_Shope_payment.objects.filter(shope_id=s.id, added_date__year=today_date.year, month=month.Month(year_by_month, last_month)).last()
             if asp:
                 if asp.is_paid == True:
                     status = 'paid'

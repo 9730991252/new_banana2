@@ -80,11 +80,17 @@ def create_payment(request):
             "payment_capture": "1"
         }
         razorpay_order = client.order.create(order_data)
-        
+
+        last_month = date.today().month-1
+        year_by_month = date.today().year
+        if last_month == 0:
+            last_month = 12
+            year_by_month = year_by_month-1
+
         Auto_Shope_payment.objects.create(
             shope_id=shope,
             amount=int(amount),
-            month=month.Month(date.today().year, date.today().month - 1),
+            month=month.Month(year_by_month, last_month),
             razorpay_order_id=razorpay_order['id']
         )
         return JsonResponse({
